@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>SensorLog — MongoDB Atlas</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00ff41">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SensorLog">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap');
 
@@ -525,3 +531,29 @@ function updateStats() {
 </script>
 </body>
 </html>
+<script>
+// PWA Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(() => console.log('SW registrado'))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+
+// Botón instalar
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.createElement('button');
+  btn.className = 'btn btn-primary';
+  btn.style = 'display:block;width:calc(100% - 32px);margin:0 16px 12px';
+  btn.textContent = '📲 Instalar App en tu dispositivo';
+  btn.onclick = () => {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => { btn.remove(); deferredPrompt = null; });
+  };
+  document.querySelector('.controls').insertAdjacentElement('beforebegin', btn);
+});
+</script>
